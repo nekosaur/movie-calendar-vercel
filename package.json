@@ -32,6 +32,7 @@
     "typescript": "5.4.4",
     "vercel": "^28.10.2",
     "vite": "^5.2.0",
+    "vite-plugin-vercel": "^5.0.5",
     "vue-tsc": "^2.0.6"
   },
   "packageManager": "yarn@4.1.1",
