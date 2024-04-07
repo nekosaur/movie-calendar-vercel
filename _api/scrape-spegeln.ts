@@ -1,10 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { withDatabase } from './_shared/db.js'
 import { MovieModel } from './_shared/movies/movie.schema.js'
-import type { Movie } from './_shared/movies/movie.schema'
+import type { Movie } from './_shared/movies/movie.schema.js'
 import { parse } from 'node-html-parser'
 import { ShowtimeModel } from './_shared/showtimes/showtime.schema.js'
-import type { Showtime } from './_shared/showtimes/showtime.schema'
+import type { Showtime } from './_shared/showtimes/showtime.schema.js'
 
 type SpegelnNextData = {
   props: {

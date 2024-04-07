@@ -2,18 +2,10 @@
 import { ref } from 'vue'
 import { useShowtimes, ShowtimeEvent } from './hooks/useShowtimes'
 import { useDate } from 'vuetify'
-import { format } from 'date-fns'
+import { format } from 'date-fns-tz'
 
-const date = ref([new Date()])
 const { showtimes } = useShowtimes()
-
-// function format(date: Date) {
-//   return `${date.getHours()}:${String(date.getUTCMinutes()).padStart(2, '0')}`
-// }
-
-// function formatMonth(date: Date) {
-//   return `${date.getUTCMonth()}`
-// }
+const date = ref([new Date()])
 
 const showShowtimeDetails = ref(false)
 const showtimeDetails = ref<ShowtimeEvent | null>(null)
@@ -65,7 +57,11 @@ function handleClickPrevious() {
               density="compact"
               @click="() => handleShowtimeClick(event as any as ShowtimeEvent)"
             >
-              {{ format((event as any as ShowtimeEvent).start, 'HH:mm') }}
+              {{
+                format((event as any as ShowtimeEvent).start, 'HH:mm', {
+                  timeZone: 'Europe/Stockholm'
+                })
+              }}
               {{ (event as any as ShowtimeEvent).movie.title }}
             </v-chip>
           </template>
