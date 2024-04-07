@@ -1,10 +1,10 @@
 import type { Config } from '@netlify/functions'
-import { withDatabase } from '../shared/db'
-import { MovieModel } from '../shared/movies/movie.schema'
-import type { Movie } from '../shared/movies/movie.schema'
-import axios from 'axios'
-import { ShowtimeModel } from '../shared/showtimes/showtime.schema'
-import type { Showtime } from '../shared/showtimes/showtime.schema'
+import { withDatabase } from './_shared/db.js'
+import { MovieModel } from './_shared/movies/movie.schema.js'
+import type { Movie } from './_shared/movies/movie.schema'
+import { ShowtimeModel } from './_shared/showtimes/showtime.schema.js'
+import type { Showtime } from './_shared/showtimes/showtime.schema'
+import { VercelRequest, VercelResponse } from '@vercel/node'
 
 type FilmstadenMovieJson = {
   items: {
@@ -34,11 +34,11 @@ type FilmstadenShowJson = {
 }
 
 async function scrapeMovies() {
-  const response = await axios.get(
+  const fetched = await fetch(
     'https://services.cinema-api.com/movie/upcoming/sv/1/1024/false'
   )
 
-  const data = response.data as FilmstadenMovieJson
+  const data = (await fetched.json()) as FilmstadenMovieJson
 
   const models = data.items
     .filter(
@@ -73,17 +73,18 @@ async function scrapeShowtimes(movies: Movie[]) {
     movies.map((movie) => [movie.sourceId, movie])
   )
 
-  const response = await axios.get(
+  const fetched = await fetch(
     'https://services.cinema-api.com/show/stripped/sv/1/1024/?CountryAlias=se&CityAlias=MA&Channel=Web'
   )
 
-  const data = response.data as FilmstadenShowJson
+  const data = (await fetched.json()) as FilmstadenShowJson
 
   const models = data.items
     .filter((showtime) => moviesBySourceId.has(showtime.mId))
     .map<Showtime>((showtime) => ({
       time: new Date(showtime.utc),
       theater: 'filmstaden',
+      // @ts-expect-error TODO: property id ObjectId but it should be fine to pass entire document
       movie: moviesBySourceId.get(showtime.mId),
       soldOut: false,
       tags: [],
@@ -98,13 +99,16 @@ async function scrapeShowtimes(movies: Movie[]) {
   return result
 }
 
-export default async (_req: Request) => {
+export default async function handler(
+  _request: VercelRequest,
+  response: VercelResponse
+) {
   return withDatabase(async () => {
     const movies = await scrapeMovies()
 
     await scrapeShowtimes(movies)
 
-    return new Response('OK!')
+    return response.send('OK!')
   })
 }
 
