@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useShowtimes, ShowtimeEvent } from './hooks/useShowtimes'
 import { useDate } from 'vuetify'
 import { format } from 'date-fns-tz'
+import ShowtimeDetailsDialog from './components/ShowtimeDetailsDialog.vue'
 
 const { showtimes } = useShowtimes()
 const date = ref([new Date()])
@@ -69,44 +70,10 @@ function handleClickPrevious() {
       </v-container>
     </v-main>
 
-    <v-dialog v-model="showShowtimeDetails" max-width="800">
-      <v-card>
-        <v-card-item>
-          <v-card-title class="d-flex justify-space-between align-center">
-            {{ showtimeDetails?.movie.title }}
-
-            <div>
-              <v-chip
-                density="compact"
-                class="text-capitalize"
-                :color="
-                  showtimeDetails?.theater === 'spegeln' ? '#2c412f' : '#cc0028'
-                "
-                >{{ showtimeDetails?.theater }}</v-chip
-              >
-              <template v-for="tag in showtimeDetails?.tags" :key="tag">
-                <v-chip density="compact" class="ml-2">{{ tag }}</v-chip>
-              </template>
-            </div>
-          </v-card-title>
-        </v-card-item>
-
-        <v-card-text>
-          <div v-html="showtimeDetails?.movie.synopsis" />
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn
-            variant="outlined"
-            text="Boka biljett"
-            target="_blank"
-            :href="showtimeDetails?.url"
-          ></v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <ShowtimeDetailsDialog
+      v-model="showShowtimeDetails"
+      :showtime="showtimeDetails"
+    ></ShowtimeDetailsDialog>
   </v-app>
 </template>
 
