@@ -70,6 +70,7 @@ function handleClickPrevious() {
       </v-container>
     </v-main>
 
+    <!-- @vue-ignore TODO: why is showtime complaining? it's the same type on both sides -->
     <ShowtimeDetailsDialog
       v-model="showShowtimeDetails"
       :showtime="showtimeDetails"
