@@ -1,6 +1,5 @@
 import mongoose, { ConnectOptions } from 'mongoose'
 
-// @ts-expect-error TODO fix this
 const uri = process.env.MONGODB_URI
 
 const clientOptions: Partial<ConnectOptions> = {
