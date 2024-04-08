@@ -2,11 +2,11 @@
   "crons": [
     {
       "path": "/api/scrape-filmstaden",
-      "schedule": "0 5 * * *"
+      "schedule": "0 15 * * *"
     },
     {
       "path": "/api/scrape-spegeln",
-      "schedule": "0 5 * * *"
+      "schedule": "0 15 * * *"
     }
   ]
 }
